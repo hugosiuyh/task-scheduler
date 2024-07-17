@@ -1,43 +1,34 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import AuthContext from '../context/AuthContext';
+import { useSession } from '../context/AuthContext';
 
-const SignUpScreen: React.FC = () => {
+const SignInScreen: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [name, setName] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-  const authContext = useContext(AuthContext);
+  const { signIn, user } = useSession();
   const router = useRouter();
 
-  if (!authContext) {
-    throw new Error('AuthContext must be used within an AuthProvider');
-  }
-
-  const { signUp } = authContext;
-
-  const handleSignUp = async () => {
+  const handleSignIn = async () => {
     try {
-      setError(null); // Reset error state before attempting to sign up
-      await signUp(email, password, name); // Pass name to signUp function
+      setError(null); // Reset error state before attempting to sign in
+      await signIn(email, password);
       router.push('/(tabs)/tasklist'); // Redirect to TaskListScreen
     } catch (error: any) {
-      console.error('Sign up error:', error);
-      setError(error.message || 'An error occurred during sign up.');
+      console.error('Sign in error:', error);
+      setError(error.message || 'An error occurred during sign in.');
     }
+  };
+
+  const navigateToSignUp = () => {
+    router.push('/signup'); // Adjust the path to your sign-up screen
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+      <Text style={styles.title}>Sign In</Text>
       {error && <Text style={styles.error}>{error}</Text>}
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-      />
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -54,9 +45,16 @@ const SignUpScreen: React.FC = () => {
         onChangeText={setPassword}
       />
       <Button
-        title="Sign Up"
-        onPress={handleSignUp}
+        title="Sign In"
+        onPress={handleSignIn}
       />
+      <View style={styles.signupContainer}>
+        <Text style={styles.signupText}>Don't have an account?</Text>
+        <Button
+          title="Sign Up"
+          onPress={navigateToSignUp}
+        />
+      </View>
     </View>
   );
 };
@@ -84,6 +82,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: 'center',
   },
+  signupContainer: {
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  signupText: {
+    marginBottom: 8,
+  },
 });
 
-export default SignUpScreen;
+export default SignInScreen;
