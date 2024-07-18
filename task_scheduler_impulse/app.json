@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "taskscheduler"
+      "bundleIdentifier": "com.taskschedulerimpulse.app"
     },
     "android": {
       "adaptiveIcon": {

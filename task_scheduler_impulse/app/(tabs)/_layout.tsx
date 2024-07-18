@@ -26,7 +26,9 @@ const AppLayout = ({ children }) => {
 export default function TabLayout() {
   return (
     <AppLayout>
-      <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
+      <Tabs
+        screenOptions={{ tabBarActiveTintColor: 'blue' }}
+      >
         <Tabs.Screen
           name="tasklist"
           options={{

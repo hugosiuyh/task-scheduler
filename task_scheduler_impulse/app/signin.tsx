@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSession } from '../context/AuthContext';
 
@@ -27,7 +27,7 @@ const SignInScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign In</Text>
+      <Text style={styles.title}>Task Scheduler</Text>
       {error && <Text style={styles.error}>{error}</Text>}
       <TextInput
         style={styles.input}
@@ -50,10 +50,9 @@ const SignInScreen: React.FC = () => {
       />
       <View style={styles.signupContainer}>
         <Text style={styles.signupText}>Don't have an account?</Text>
-        <Button
-          title="Sign Up"
-          onPress={navigateToSignUp}
-        />
+        <TouchableOpacity onPress={navigateToSignUp}>
+        <Text style={[styles.signupText, styles.underlineText]}>Sign Up</Text>
+      </TouchableOpacity>
       </View>
     </View>
   );
@@ -88,6 +87,11 @@ const styles = StyleSheet.create({
   },
   signupText: {
     marginBottom: 8,
+    fontSize: 16,
+    color: '#000', // Customize text color if needed
+  },
+  underlineText: {
+    textDecorationLine: 'underline',
   },
 });
 

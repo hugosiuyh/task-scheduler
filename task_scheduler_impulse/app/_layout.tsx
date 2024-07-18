@@ -4,7 +4,7 @@ import { AuthProvider } from '../context/AuthContext';
 const Layout: React.FC = () => {
   return (
     <AuthProvider>
-      <Stack />
+      <Stack screenOptions={{ headerShown: false }} />
     </AuthProvider>
   );
 };

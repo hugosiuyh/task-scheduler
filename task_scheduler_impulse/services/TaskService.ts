@@ -26,7 +26,7 @@ export const createTask = async (task, image) => {
     let imageUrl = null;
     if (image) {
       const imageRef = ref(storage, `tasks/${user.uid}/${uuidv4()}`);
-      await uploadBytesResumable(imageRef, image);
+      await uploadBytesResumable(imageRef, image, { contentType: 'image/jpeg' });
       imageUrl = await getDownloadURL(imageRef);
     }
 
@@ -44,10 +44,11 @@ export const updateTask = async (id, task, image) => {
     const user = auth.currentUser;
     if (!user) throw new Error('User not authenticated');
 
-    let imageUrl = task.imageUrl;
+    let imageUrl = task.image;
     if (image) {
+      // TODO: Add logic that prevents uploading images that are too large
       const imageRef = ref(storage, `tasks/${user.uid}/${uuidv4()}`);
-      await uploadBytes(imageRef, image);
+      await uploadBytesResumable(imageRef, image,{ contentType: 'image/jpeg' });
       imageUrl = await getDownloadURL(imageRef);
     }
 

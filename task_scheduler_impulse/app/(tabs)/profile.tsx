@@ -2,45 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import { useSession } from '../../context/AuthContext';
 import { useRouter } from 'expo-router';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../../firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
   const { signOut, user } = useSession();
   const router = useRouter();
   const [name, setName] = useState('');
-  const [goals, setGoals] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (user) {
-        const docRef = doc(db, 'users', user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          setName(userData.name || '');
-          setGoals(userData.goals || '');
-        } else {
-          // If no user data exists, set the displayName from the auth user
-          setName(user.displayName || '');
-        }
+        const storedName = await AsyncStorage.getItem('userName');
+        setName(storedName || user.displayName || '');
       }
     };
 
     fetchUserProfile();
   }, [user]);
 
-  const handleSave = async () => {
-    if (user) {
-      const docRef = doc(db, 'users', user.uid);
-      await setDoc(docRef, { name, goals }, { merge: true });
-    }
-  };
-
   const handleSignOut = async () => {
     try {
       await signOut();
-      router.push('/signin'); // Redirect to sign-in screen after sign out
+    //   router.push('/signin'); // Redirect to sign-in screen after sign out
     } catch (error) {
       console.error('Sign out error:', error);
     }
@@ -48,20 +32,7 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Profile</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Goals"
-        value={goals}
-        onChangeText={setGoals}
-      />
-      <Button title="Save" onPress={handleSave} />
+        <Text style={styles.title}>{name}</Text>
       <Button title="Sign Out" onPress={handleSignOut} />
     </ScrollView>
   );
@@ -80,11 +51,16 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
     width: '100%',
+  },
+  displayText: {
+    height: 40,
+    fontSize: 18,
+    paddingHorizontal: 8,
+    width: '100%',
+    textAlignVertical: 'center',
   },
 });
 

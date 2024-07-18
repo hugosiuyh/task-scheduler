@@ -1,92 +1,123 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, Dimensions, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from 'expo-image';
 
-const TaskForm = ({ task, onSubmit, onCancel }) => {
+const TaskForm = ({ task, onSubmit, onCancel, onDelete }) => {
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description);
-  const [image, setImage] = useState(null);
-  const [imageUri, setImageUri] = useState(task.imageUrl || null);
+  const [image, setImage] = useState(task.image); // Use imageUrl
+  const [createdAt, setCreatedAt] = useState(task.createdAt);
+  const [completedAt, setCompletedAt] = useState(task.completedAt);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setTitle(task.title);
     setDescription(task.description);
-    setImageUri(task.imageUrl || null);
+    setImage(task.image); // Use imageUrl
+    setCreatedAt(task.createdAt);
+    setCompletedAt(task.completedAt);
   }, [task]);
 
-  const handlePickImage = async () => {
+  const handleImagePick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
+    console.log(result)
 
     if (!result.canceled) {
-      const { uri } = result.assets[0];
-      setImageUri(uri);
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      setImage(blob);
+      setImage(result.assets[0].uri); // Correctly get the URI from the result
     }
   };
 
-  const handleRemoveImage = () => {
-    setImage(null);
-    setImageUri(null);
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    await onSubmit({ ...task, title, description, image }); // Ensure the imageUrl is passed
+    setIsLoading(false);
   };
 
-  const handleSubmit = () => {
-    if (!title.trim() || !description.trim()) {
-      Alert.alert('Error', 'Title and description cannot be empty.');
-      return;
-    }
-    onSubmit({ title, description, imageUrl: imageUri, createdAt: task.createdAt }, image);
-  };
+  const { width } = Dimensions.get('window');
+  const imageSize = width * 0.9;
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Title"
-        value={title}
-        onChangeText={setTitle}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-      />
-      <Button title="Pick Image" onPress={handlePickImage} />
-      {imageUri && (
-        <View>
-          <Image source={{ uri: imageUri }} style={styles.image} />
-          <Button title="Remove Image" onPress={handleRemoveImage} />
-        </View>
-      )}
-      <Button title="Submit" onPress={handleSubmit} />
-      <Button title="Cancel" onPress={onCancel} />
+    <View style={styles.formContainer}>
+      <View style={styles.modalHeader}>
+        <Button title="Cancel" onPress={onCancel} />
+        <Text style={styles.modalTitle}>{task?.id ? 'Edit Task' : 'Add Task'}</Text>
+        {isLoading ? (
+          <ActivityIndicator size="small" color="#0000ff" />
+        ) : (
+          <Button title="Done" onPress={handleSubmit} disabled={isLoading} />
+        )}
+      </View>
+      <View style={styles.form}>
+        {image && <Image source={{ uri: image }} style={[styles.image, { width: imageSize, height: imageSize * 0.75 }]} />}
+        <TextInput
+          style={styles.input}
+          placeholder="Title"
+          value={title}
+          onChangeText={setTitle}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Description"
+          value={description}
+          onChangeText={setDescription}
+        />
+        <Button title="Pick Image" onPress={handleImagePick} />
+        {task?.id && <Button title="Delete" onPress={() => onDelete(task.id)} color="red" />}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
+  formContainer: {
+    height: '100%',
+    width: '100%',
+  },
+  form: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center'
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#ccc',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    marginBottom: 12,
+    paddingHorizontal: 8,
+    width: '90%',
   },
   image: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
+    marginVertical: 10,
+  },
+  modalHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    padding: 20,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  dateContainer: {
+    marginVertical: 10,
+  },
+  dateText: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 5,
   },
 });
 
