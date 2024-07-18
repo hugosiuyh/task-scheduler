@@ -18,27 +18,35 @@ export const getTasks = async (userId) => {
   }
 };
 
+
+
 export const createTask = async (task, image) => {
   try {
     const user = auth.currentUser;
     if (!user) throw new Error('User not authenticated');
 
     let imageUrl = null;
+
     if (image) {
       const imageRef = ref(storage, `tasks/${user.uid}/${uuidv4()}`);
       await uploadBytesResumable(imageRef, image, { contentType: 'image/jpeg' });
       imageUrl = await getDownloadURL(imageRef);
     }
 
-    const taskWithUser = { ...task, userId: user.uid, userName: user.displayName || 'Anonymous', imageUrl };
+    const taskWithUser = {
+      ...task,
+      userId: user.uid,
+      userName: user.displayName || 'Anonymous',
+      ...(imageUrl && { imageUrl }), // Conditionally add imageUrl if it exists
+    };
+
     const docRef = await addDoc(tasksCollection, taskWithUser);
     return { id: docRef.id, ...taskWithUser };
   } catch (error) {
-    console.error("Error creating task: ", error);
+    console.error('Error creating task: ', error);
     return null;
   }
 };
-
 export const updateTask = async (id, task, image) => {
   try {
     const user = auth.currentUser;
