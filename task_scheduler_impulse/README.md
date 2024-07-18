@@ -16,8 +16,13 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
     npx expo start
    ```
 
-3. Start the app in ios simulator
+3a. Start the app in ios simulator
 
    ```bash
     i
+   ```
+3b. Start the app in web simulator 
+
+   ```bash
+    w
    ```
