@@ -1,10 +1,6 @@
 # Welcome to your Expo app 👋
-
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-## Create .env an
 ## Get started
 1. Create .env file and add configurations
-2. 
    ```bash
    
 FIREBASECONFIG = { FIREBASECONFIG };
