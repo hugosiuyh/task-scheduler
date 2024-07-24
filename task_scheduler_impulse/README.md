@@ -2,9 +2,7 @@
 ## Get started
 1. Create .env file and add configurations
    ```bash
-   
-FIREBASECONFIG = { FIREBASECONFIG };
-
+   FIREBASECONFIG = { FIREBASECONFIG };
    ```
 
 3. Install dependencies
