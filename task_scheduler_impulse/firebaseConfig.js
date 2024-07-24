@@ -5,7 +5,12 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
-import { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID } from '@env';
+const FIREBASE_API_KEY='AIzaSyBuvY-WLMSsr9mz6zW9vAx-Wq6eFMTQfvE'
+const FIREBASE_AUTH_DOMAIN='taskscheduler-429019.firebaseapp.com'
+const FIREBASE_PROJECT_ID='taskscheduler-429019'
+const FIREBASE_STORAGE_BUCKET='taskscheduler-429019.appspot.com'
+const FIREBASE_MESSAGING_SENDER_ID='327223369173'
+const FIREBASE_APP_ID='1:327223369173:web:543ad48de9c75fd947315c'
 
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
