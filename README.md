@@ -1,4 +1,5 @@
-# Welcome to your Expo app 👋
+# Task Scheduler App 
+
 ## Get started
 1. Create .env file and add configurations
    ```bash
