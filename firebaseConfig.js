@@ -20,6 +20,17 @@ const firebaseConfig = {
   messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
   appId: FIREBASE_APP_ID,
 };
+
+// const firebaseConfig = {
+//   apiKey: "AIzaSyC2mZz3yU7VnqwWTBHS0wN-ICb6vYqZ5jk",
+//   authDomain: "ratetheclub.firebaseapp.com",
+//   projectId: "ratetheclub",
+//   storageBucket: "ratetheclub.appspot.com",
+//   messagingSenderId: "532159764220",
+//   appId: "1:532159764220:web:a50f50d064f5b92feca979",
+//   measurementId: "G-SMQP2FF64V"
+// };
+
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase services
@@ -29,5 +40,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
+// const analytics = getAnalytics(app);
 
 export { app, auth, db, storage };
